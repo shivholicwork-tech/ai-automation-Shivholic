@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "npm run build -w @shivholic/web",
+  "installCommand": "npm install",
+  "outputDirectory": "apps/web/.next",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "${NEXT_PUBLIC_API_BASE_URL}/api/:path*"
+    }
+  ]
+}

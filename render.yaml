@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: ai-automation-shivholic-api
+    runtime: node
+    rootDir: .
+    buildCommand: npm install && npm run build -w @shivholic/api
+    startCommand: npm run start -w @shivholic/api
+    plan: starter
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+  - type: worker
+    name: ai-automation-shivholic-worker
+    runtime: node
+    rootDir: .
+    buildCommand: npm install && npm run build -w @shivholic/api
+    startCommand: npm run worker -w @shivholic/api
+    plan: starter
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false

@@ -1,35 +1,28 @@
 # AI Automation Shivholic
 
-Production-ready monorepo SaaS platform with Next.js web app, Express API, Prisma/PostgreSQL, Clerk auth, OpenAI, Resend, WhatsApp Cloud API, BullMQ queues, Redis, and Socket.IO.
+Enterprise-grade AI automation SaaS monorepo starter with a Next.js web app, Express API, Prisma/PostgreSQL schema, Socket.IO realtime, and deployment manifests for Vercel + Render/Railway.
 
-## Architecture Plan
-1. Monorepo using npm workspaces (`apps/*`, `packages/*`).
-2. `apps/web`: Next.js App Router dashboard + AI chat/CRM/workflows UI.
-3. `apps/api`: Express modular backend with validation, webhooks, queue workers.
-4. `packages/ui`, `packages/shared`, `packages/types`: reusable UI and domain primitives.
-5. `prisma/schema.prisma`: complete multi-tenant CRM + automation schema.
-6. Deployment: Vercel (web), Railway/Render (api + worker + redis), Supabase PostgreSQL.
+## Included
+- Monorepo workspaces: `apps/*`, `packages/*`.
+- Frontend app: `apps/web` (Next.js App Router + Tailwind).
+- Backend app: `apps/api` (Express + Socket.IO).
+- Database schema: `prisma/schema.prisma`.
+- Infra: `docker/`, `vercel.json`, `render.yaml`, `railway.json`.
 
-## Monorepo Structure
-- `apps/web` - frontend
-- `apps/api` - backend
-- `packages/ui` - reusable UI primitives
-- `packages/shared` - utility functions and config
-- `packages/types` - domain types
-- `prisma` - schema and migrations
-- `docker` - container orchestration
-- `scripts` - dev/prod scripts
-
-## Quickstart
+## Run locally
 ```bash
 npm install
 cp .env.example .env
 npm run dev
 ```
 
-## Deployment
-- Frontend: deploy `apps/web` to Vercel.
-- Backend: deploy `apps/api` as web service and worker process on Railway/Render.
-- DB: set `DATABASE_URL` from Supabase.
+## Build
+```bash
+npm run build
+```
 
-See `.env.example` and `docker/docker-compose.yml` for required integrations.
+## Deploy
+Follow `scripts/deploy.md` for production rollout to:
+- Vercel for `apps/web`
+- Render/Railway for `apps/api` + worker
+- Supabase PostgreSQL + Redis provider
