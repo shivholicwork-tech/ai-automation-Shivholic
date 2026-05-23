@@ -11,7 +11,7 @@
 - Set **Root Directory** to `apps/web`.
 - Set build command: `npm run build -w @shivholic/web`.
 - Set install command: `npm install`.
-- Set `NEXT_PUBLIC_API_BASE_URL` to your deployed API base URL.
+- Set `NEXT_PUBLIC_API_BASE_URL` to your deployed API base URL (for `/api/*` rewrite through Next.js).
 
 ## 3) Backend (Render)
 - `render.yaml` is included for Infrastructure as Code.
