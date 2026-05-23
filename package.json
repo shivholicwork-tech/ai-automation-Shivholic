@@ -1,0 +1,19 @@
+{
+  "name": "ai-automation-shivholic",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @shivholic/web && npm run build -w @shivholic/api",
+    "dev": "concurrently \"npm run dev -w @shivholic/web\" \"npm run dev -w @shivholic/api\"",
+    "lint": "npm run lint -w @shivholic/web && npm run lint -w @shivholic/api",
+    "typecheck": "npm run typecheck -w @shivholic/web && npm run typecheck -w @shivholic/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.3"
+  }
+}

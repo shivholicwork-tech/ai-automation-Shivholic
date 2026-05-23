@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LeadStatus { NEW QUALIFIED WON LOST }
+enum ChannelType { WHATSAPP EMAIL CHAT }
+enum WorkflowStatus { DRAFT ACTIVE PAUSED }
+enum RunStatus { PENDING RUNNING SUCCESS FAILED }
+enum NotificationType { INFO WARNING SUCCESS ERROR }
+
+model User {
+  id           String   @id @default(cuid())
+  clerkId      String   @unique
+  email        String   @unique
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  memberships  TeamMember[]
+  workspaces   Workspace[] @relation("WorkspaceOwner")
+  contacts     Contact[]
+  notifications Notification[]
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  members     TeamMember[]
+  workspaces  Workspace[]
+  subscription Subscription?
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      String   @default("member")
+  createdAt DateTime @default(now())
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([teamId, userId])
+}
+
+model Workspace {
+  id          String   @id @default(cuid())
+  teamId      String
+  ownerId     String
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  owner       User     @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  contacts    Contact[]
+  leads       Lead[]
+  conversations Conversation[]
+  emailCampaigns EmailCampaign[]
+  workflows   Workflow[]
+  aiTasks     AiTask[]
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  workspaceId String
+  ownerId     String
+  email       String?
+  phone       String?
+  firstName   String
+  lastName    String?
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner       User      @relation(fields: [ownerId], references: [id])
+  leads       Lead[]
+  notes       String?
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  workspaceId String
+  contactId   String
+  status      LeadStatus @default(NEW)
+  score       Int      @default(0)
+  source      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  workspaceId String
+  channel     ChannelType
+  externalId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  whatsappMessages WhatsappMessage[]
+  emailLogs   EmailLog[]
+}
+
+model WhatsappMessage {
+  id            String   @id @default(cuid())
+  conversationId String
+  direction     String
+  content       String
+  metaMessageId String?
+  createdAt     DateTime @default(now())
+  conversation  Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model EmailCampaign {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  subject     String
+  template    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  logs        EmailLog[]
+}
+
+model EmailLog {
+  id             String   @id @default(cuid())
+  campaignId     String?
+  conversationId String?
+  recipient      String
+  subject        String
+  body           String
+  status         String
+  createdAt      DateTime @default(now())
+  campaign       EmailCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+}
+
+model Workflow {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  definition  Json
+  status      WorkflowStatus @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  runs        WorkflowRun[]
+}
+
+model WorkflowRun {
+  id          String   @id @default(cuid())
+  workflowId  String
+  status      RunStatus @default(PENDING)
+  input       Json?
+  output      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+model AiTask {
+  id          String   @id @default(cuid())
+  workspaceId String
+  model       String
+  prompt      String
+  response    String?
+  status      RunStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        NotificationType
+  title       String
+  body        String
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  teamId    String   @unique
+  plan      String
+  status    String
+  renewsAt  DateTime
+  createdAt DateTime @default(now())
+  team      Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}

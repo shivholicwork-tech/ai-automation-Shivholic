@@ -1,165 +1,35 @@
-# ai-automation-Shivholic
-Production-ready AI automation SaaS platform with WhatsApp AI agent, Email AI agent, workflow automation, CRM dashboard, OpenAI integration, real-time chat, and scalable modern architecture.
-# AI Automation Platform
+# AI Automation Shivholic
 
-A modern AI-powered automation SaaS platform with:
+Production-ready monorepo SaaS platform with Next.js web app, Express API, Prisma/PostgreSQL, Clerk auth, OpenAI, Resend, WhatsApp Cloud API, BullMQ queues, Redis, and Socket.IO.
 
-- WhatsApp AI Agent
-- Email AI Agent
-- AI Chat Assistant
-- Workflow Automation
-- CRM Dashboard
-- OpenAI Integration
-- Real-Time Messaging
-- Lead Management
-- Campaign Automation
+## Architecture Plan
+1. Monorepo using npm workspaces (`apps/*`, `packages/*`).
+2. `apps/web`: Next.js App Router dashboard + AI chat/CRM/workflows UI.
+3. `apps/api`: Express modular backend with validation, webhooks, queue workers.
+4. `packages/ui`, `packages/shared`, `packages/types`: reusable UI and domain primitives.
+5. `prisma/schema.prisma`: complete multi-tenant CRM + automation schema.
+6. Deployment: Vercel (web), Railway/Render (api + worker + redis), Supabase PostgreSQL.
 
-Built using modern scalable architecture and production-grade technologies.
+## Monorepo Structure
+- `apps/web` - frontend
+- `apps/api` - backend
+- `packages/ui` - reusable UI primitives
+- `packages/shared` - utility functions and config
+- `packages/types` - domain types
+- `prisma` - schema and migrations
+- `docker` - container orchestration
+- `scripts` - dev/prod scripts
 
----
-
-# Tech Stack
-
-## Frontend
-- Next.js
-- TypeScript
-- Tailwind CSS
-- ShadCN UI
-- Framer Motion
-
-## Backend
-- Node.js
-- Express / NestJS
-- Prisma ORM
-
-## Database
-- PostgreSQL
-
-## AI
-- OpenAI API
-
-## Authentication
-- Clerk Auth
-
-## Payments
-- Stripe
-
-## Messaging
-- Meta WhatsApp Cloud API
-- Resend API
-
-## Infrastructure
-- Redis
-- BullMQ
-- AWS / Railway
-- Vercel
-
----
-
-# Features
-
-## WhatsApp AI Agent
-- AI chatbot
-- Automated replies
-- Lead qualification
-- Workflow automation
-- Real-time conversations
-
-## Email AI Agent
-- AI outreach emails
-- Follow-up automation
-- Campaign analytics
-- Smart replies
-
-## AI Chat Assistant
-- ChatGPT-style interface
-- Streaming responses
-- Context memory
-- Real-time messaging
-
-## CRM Dashboard
-- Lead management
-- Contact tracking
-- Activity logs
-- Team workspaces
-
-## Workflow Automation
-- Trigger/action workflows
-- Delayed automation
-- Multi-step AI workflows
-
----
-
-# Project Structure
-
-```bash
-apps/
- ├── web/
- ├── api/
-
-packages/
- ├── ui/
- ├── shared/
- ├── types/
-```
-
----
-
-# Getting Started
-
-## Clone Repository
-
-```bash
-git clone https://github.com/yourusername/ai-automation-platform.git
-```
-
-## Install Dependencies
-
+## Quickstart
 ```bash
 npm install
-```
-
-## Run Development Server
-
-```bash
+cp .env.example .env
 npm run dev
 ```
 
----
+## Deployment
+- Frontend: deploy `apps/web` to Vercel.
+- Backend: deploy `apps/api` as web service and worker process on Railway/Render.
+- DB: set `DATABASE_URL` from Supabase.
 
-# Environment Variables
-
-Create `.env` files for:
-
-- OpenAI API
-- Clerk Auth
-- Stripe
-- PostgreSQL
-- WhatsApp Cloud API
-- Resend API
-- Redis
-
----
-
-# Deployment
-
-## Frontend
-- Vercel
-
-## Backend
-- Railway / AWS
-
-## Database
-- PostgreSQL / Supabase
-
----
-
-# Goals
-
-Build a scalable enterprise-grade AI automation platform with modern UI/UX and powerful AI workflow capabilities.
-
----
-
-# License
-
-MIT License
+See `.env.example` and `docker/docker-compose.yml` for required integrations.
